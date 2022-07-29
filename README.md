@@ -14,4 +14,4 @@ This code is licensed under the GPLv2 license. If you use this code in any way f
 
 The code has been tested in MATLAB 2020a.
 
-The numerical results based on the analytical functions were generated on a processor Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz 2.90 GHz. We recommend the use of a similar hardware or superior for the generation of the numerical results. 
+The numerical results based on the analytical functions were generated on a processor Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz 2.90 GHz. We recommend the use of a similar or superior hardware for the generation of the numerical results. 
