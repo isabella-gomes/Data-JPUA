@@ -15,7 +15,7 @@ for i=1:nUsers
         V = Votimoi;
         V(:,k)=[];
         CLUser(i) = log2(1+(((hRFi(:,k)'*Votimoi(:,k)).^2))./(sum((((hRFi(:,k)'*V)).^2))+ noiseRF));
-        CEUser(i) = abs(log2(1+(((heRF'*Votimoi(:,k)).^2))./(sum(((heRF'*V).^2))+noiseRF)));
+        CEUser(i) = (log2(1+(((heRF'*Votimoi(:,k)).^2))./(sum(((heRF'*V).^2))+noiseRF)));
         k=1+k;
     end
 end
