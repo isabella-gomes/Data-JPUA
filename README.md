@@ -10,7 +10,7 @@ Isabella W. G. da Silva and Edgar E. B. Olivo and Marcos Katz and Diana P. M. Os
 
 This code is licensed under the GPLv2 license. If you use this code in any way for research that results in publications, please cite the above article.
 
-# Software and harware requirements
+# Software and hardware requirements
 
 The code has been tested in MATLAB 2020a.
 
