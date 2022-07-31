@@ -1,4 +1,4 @@
-function [gammaSrf,noiseRF,nUsers,nLeds,Ar,dv,Psi_k,phi,Psic,phi12,l,Ts,r,gamma,eta,echarge,I_DC,B,Xamb,i_amp,gVLC,gEveVLC,gEveVLCtil,noiseEveVLC,nAntenas,hbRF,heRF,heRFtil]=CSSNR
+function [gammaSrf,noiseRF,nUsers,nLeds,Ar,dv,Psi_k,phi,Psic,phi12,l,Ts,r,gamma,eta,echarge,Pot_Led,B,Xamb,i_amp,gVLC,gEveVLC,gEveVLCtil,noiseEveVLC,nAntenas,hbRF,heRF,heRFtil]=CSSNR
 %clc
 clear all  
 Prf = 20;
@@ -7,7 +7,7 @@ noiseRF = (10^(-100/10))/1000;
 %S = length(gammaS);
 %Pled = gammaS/nLeds;
 %% Variáveis Canal VLC
-nUsers =1;
+nUsers =2;
 nLeds = 4;
 Ar = 1e-4; %area PD
 dv = 2.4; % Altura da sala
@@ -24,12 +24,12 @@ gamma = 0.54; %responsitividade
 eta = 0.44; %fator de conversão do LED
 Pot_Led = 10^(40/10)/1000;
 echarge = 1.6*10^(-19);
-I_DC = Pot_Led/eta; %offset 
+%I_DC = Pot_Led/eta; %offset 
 B = 10*10^6; %largura de banda
 Xamb = 10.93; %fotocorrente luz ambiente
 i_amp = 5*10^(-12); %preamplifier noise current density
 
-Leds = [1.425 1.425;-1.425 1.425; -1.425 -1.425; 1.425 -1.425]; % posição dos Leds
+Leds = [sqrt(2) sqrt(2);-sqrt(2) sqrt(2); -sqrt(2) -sqrt(2); sqrt(2) -sqrt(2)]; % posição dos Leds
 Raio = dv.*tan(phi12);
 th = 0:pi/50:2*pi;
 %Posicionando Cobertura de cada fonte
@@ -77,8 +77,8 @@ yLed4 = Raio.*sin(th)+Leds(4,2);
     StateEve = [ine1;ine2;ine3;ine4];
     gEveVLC =real(StateEve.*(Ar./(distEvevlc.^2)).*((l+1)/(2*pi)).*cos(phi)^l.*Ts.*(r^2/(sin(Psic)^2)).*cos(Psi_k));
     gEveVLCtil = gEveVLC + sqrt(Deltavlc).*randn(length(gEveVLC),1);
-    %noiseEveVLC = 10^(-21);
-    noiseEveVLC = real(2.*gamma.*echarge.*eta.*gEveVLC'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
+    noiseEveVLC = 10^(-21);
+    %noiseEveVLC = real(2.*gamma.*echarge.*eta.*gEveVLC'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
 
      
     %% RF

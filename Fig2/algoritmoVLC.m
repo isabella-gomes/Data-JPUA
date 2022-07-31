@@ -1,10 +1,8 @@
 function [Wotimo]=algoritmoVLC(noiseVLC,noiseEveVLC,rate,I_DC,gamma,eta,gVLC,gEveVLC,nUsers,nLeds)
-noise = mean(noiseVLC./(gamma.*eta),'all');
-noiseEve = mean(noiseEveVLC./(gamma.*eta),'all');
-alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noise))';
-alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEve))';
-betak = (1./(3*noise))';
-betae = (1./(3*noiseEve))';
+alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC))';
+alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEveVLC))';
+betak = (1./(3*noiseVLC))';
+betae = (1./(3*noiseEveVLC))';
 %gammak = 0.5;
 convergence = 0;
 Lmax = 10;

@@ -53,13 +53,10 @@ for i=1:nUsers
     end
 end
 noiseVLC = 10^(-21);
-%noiseVLC = real(2.*gamma.*echarge.*eta.*hVLC'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
-noise = mean(noiseVLC./(gamma.*eta),'all');
-noiseEve = mean(noiseEveVLC./(gamma.*eta),'all');
-alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noise));
-alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEve));
-betak = (1./(3*noise));
-betae = (1./(3*noiseEve));
+alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEveVLC));
+betak = (1./(3*noiseVLC));
+betae = (1./(3*noiseEveVLC));
 
 if UsersVLC ~= 0
 [Wotimo]=algoritmoVLC(noiseVLC,noiseEveVLC,rate,I_DC,gamma,eta,hVLC,gEveVLC,UsersVLC,nLeds);
@@ -118,10 +115,8 @@ for i = 1:nUsers
             end
         end
         noiseVLCi = 10^(-21);
-        %noiseVLCi = real(2.*gamma.*echarge.*eta.*hVLCi'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
-        noisei = mean(noiseVLCi./(gamma.*eta),'all');
-        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noisei));
-        betaki = (1./(3*noisei));
+        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+        betaki = (1./(3*noiseVLC));
         [Wotimoi]=algoritmoVLC(noiseVLCi,noiseEveVLC,rate,I_DC,gamma,eta,hVLCi,gEveVLC,UsersVLC,nLeds);
         CLUseriVLC=zeros(1,UsersVLC);
         CEUseriVLC=zeros(1,UsersVLC);
@@ -155,7 +150,7 @@ for i = 1:nUsers
 end
 if alocUsers==alocTest
     convergence=1;
-    [Wotimoi]=algoritmoVLC(noise,noiseEveVLC,rate,I_DC,gamma,eta,hVLCi,gEveVLC,UsersVLC,nLeds);
+    [Wotimoi]=algoritmoVLC(noiseVLC,noiseEveVLC,rate,I_DC,gamma,eta,hVLCi,gEveVLC,UsersVLC,nLeds);
     CSVLCfim = zeros(1,UsersVLC);
     for z=1:UsersVLC
                 W = Wotimoi;

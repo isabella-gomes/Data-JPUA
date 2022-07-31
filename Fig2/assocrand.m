@@ -60,12 +60,10 @@ for i=1:nUsers
 end
 noiseVLC = 10^(-21);
 %noiseVLC = real(2.*gamma.*echarge.*eta.*hVLC'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
-noise = mean(noiseVLC./(gamma.*eta),'all');
-noiseEve = mean(noiseEveVLC./(gamma.*eta),'all');
-alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noise));
-alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEve));
-betak = (1./(3*noise));
-betae = (1./(3*noiseEve));
+alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEveVLC));
+betak = (1./(3*noiseVLC));
+betae = (1./(3*noiseEveVLC));
 
 if UsersVLC ~= 0
 [Wotimo]=algoritmoVLC(noiseVLC,noiseEveVLC,rate,I_DC,gamma,eta,hVLC,gEveVLC,UsersVLC,nLeds);
@@ -88,7 +86,7 @@ for i=1:nUsers
         V = Votimo;
         V(:,k)=[];
         CLUser(i) = log2(1+(((hRF(:,k)'*Votimo(:,k)).^2))./(sum((((hRF(:,k)'*V)).^2))+ noiseRF));
-        CEUser(i) = abs(log2(1+(((heRFtil'*Votimo(:,k)).^2))./(sum(((heRFtil'*V).^2))+noiseRF)));
+        CEUser(i) = log2(1+(((heRFtil'*Votimo(:,k)).^2))./(sum(((heRFtil'*V).^2))+noiseRF));
         CSRF(k)=max(CLUser(i)-CEUser(i),0);
         k=1+k;
     end

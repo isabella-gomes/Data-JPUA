@@ -2,7 +2,7 @@
 %Definir a alocação inicial
 clear all
 tic
-elements = {0:1}; %cell array with N vectors to combine
+elements = {0:1,0:1}; %cell array with N vectors to combine
  combinations = cell(1, numel(elements)); %set up the varargout result
  [combinations{:}] = ndgrid(elements{:});
  combinations = cellfun(@(x) x(:), combinations,'uniformoutput',false); %there may be a better way to do this
@@ -55,12 +55,10 @@ for i=1:nUsers
 end
 %noiseVLC = real(2.*gamma.*echarge.*eta.*hVLC'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
 noiseVLC = 10^(-21);
-noise = mean(noiseVLC./(gamma.*eta),'all');
-noiseEve = mean(noiseEveVLC./(gamma.*eta),'all');
-alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noise));
-alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEve));
-betak = (1./(3*noise));
-betae = (1./(3*noiseEve));
+alphak = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+alphae = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseEveVLC));
+betak = (1./(3*noiseVLC));
+betae = (1./(3*noiseEveVLC));
 
 if UsersVLC ~= 0
 [Wotimo]=ZF(nLeds,UsersVLC,hVLC,gEveVLC,I_DC);
@@ -75,8 +73,8 @@ for i=1:nUsers
     if alocUsers(i)==1
      W = Wotimo;
      W(:,j)=[];
-      CLUser(i) = abs(log2((sum(alphak.*((hVLC(:,j))'*Wotimo).^2)+1)/(sum(betak.*(((hVLC(:,j))'*W).^2))+ 1))/2);
-      CEUser(i) = abs(log2((sum(alphae.*((gEveVLC)'*Wotimo).^2)+1)/(sum(betae.*(((gEveVLC)'*W).^2))+ 1))/2);
+      CLUser(i) = (log2((sum(alphak.*((hVLC(:,j))'*Wotimo).^2)+1)/(sum(betak.*(((hVLC(:,j))'*W).^2))+ 1))/2);
+      CEUser(i) = (log2((sum(alphae.*((gEveVLC)'*Wotimo).^2)+1)/(sum(betae.*(((gEveVLC)'*W).^2))+ 1))/2);
       CSVLC(j)=max(CLUser(i)-CEUser(i),0);
       j=1+j;
     elseif alocUsers(i)==0
@@ -112,10 +110,8 @@ for i = 1:nUsers
         hUsersi(:,i)=gVLC(:,i);
         UsersVLC=UsersVLC+1;
         hVLCi(:,UsersVLC)=gVLC(:,i);
-       % noiseVLC = real(2.*gamma.*echarge.*eta.*hVLCi'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
-        noisei = mean(noiseVLC./(gamma.*eta),'all');
-        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noisei));
-        betaki = (1./(3*noisei));
+        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+        betaki = (1./(3*noiseVLC));
         [Wotimoi]=ZF(nLeds,UsersVLC,hVLCi,gEveVLC,I_DC);
         CLUseriVLC=zeros(1,UsersVLC);
         CEUseriVLC=zeros(1,UsersVLC);
@@ -123,8 +119,8 @@ for i = 1:nUsers
             for z=1:UsersVLC
                 W = Wotimoi;
                 W(:,z)=[];
-                CLUseriVLC(z) = abs(log2((sum(alphaki.*((hVLCi(:,z))'*Wotimoi).^2)+1)/(sum(betaki.*(((hVLCi(:,z))'*W).^2))+ 1))/2);
-                CEUseriVLC(z) = abs(log2((sum(alphae.*((gEveVLC)'*Wotimoi).^2)+1)/(sum(betae.*(((gEveVLC)'*W).^2))+ 1))/2);
+                CLUseriVLC(z) = (log2((sum(alphaki.*((hVLCi(:,z))'*Wotimoi).^2)+1)/(sum(betaki.*(((hVLCi(:,z))'*W).^2))+ 1))/2);
+                CEUseriVLC(z) = (log2((sum(alphae.*((gEveVLC)'*Wotimoi).^2)+1)/(sum(betae.*(((gEveVLC)'*W).^2))+ 1))/2);
                 CSVLCaux(z)=max(CLUseriVLC(z)-CEUseriVLC(z),0);
             end
             for b = 1:length(hRFi)
@@ -198,10 +194,8 @@ for i = 1:nUsers
             end
         UsersVLC=UsersVLC-1;
         if UsersVLC~=0
-            %noiseVLC = real(2.*gamma.*echarge.*eta.*hVLCi'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
-            noisei = mean(noiseVLC./(gamma.*eta),'all');
-            alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noisei));
-            betaki = (1./(3*noisei));
+            alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+            betaki = (1./(3*noiseVLC));
             [Wotimoaux]=ZF(nLeds,UsersVLC,hVLCi,gEveVLC,I_DC);
             CLUseriVLC = zeros(1,UsersVLC);
             CEUseriVLC = zeros(1,UsersVLC);
@@ -209,15 +203,15 @@ for i = 1:nUsers
             for f=1:UsersVLC
                 Waux = Wotimoaux;
                 Waux(:,f)=[];
-                CLUseriVLC(f) = abs(log2((sum(alphaki.*((hVLCi(:,f))'*Wotimoaux).^2)+1)/(sum(betaki.*(((hVLCi(:,f))'*Waux).^2))+ 1))/21);
-                CEUseriVLC(f) = abs(log2((sum(alphae.*((gEveVLC)'*Wotimoaux).^2)+1)/(sum(betae.*(((gEveVLC)'*Waux).^2))+ 1))/2);
+                CLUseriVLC(f) = (log2((sum(alphaki.*((hVLCi(:,f))'*Wotimoaux).^2)+1)/(sum(betaki.*(((hVLCi(:,f))'*Waux).^2))+ 1))/21);
+                CEUseriVLC(f) = (log2((sum(alphae.*((gEveVLC)'*Wotimoaux).^2)+1)/(sum(betae.*(((gEveVLC)'*Waux).^2))+ 1))/2);
                 CSVLCaux(f)=max(CLUseriVLC(f)-CEUseriVLC(f),0);
             end
             sumVLCi = sum(CSVLCaux);
         else
-             noisei = 0;
-            alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noisei));
-            betaki = (1./(3*noisei));
+             noiseVLC = 0;
+            alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+            betaki = (1./(3*noiseVLC));
             Wotimoaux=0;
             CSVLCaux = 0;
             sumVLCi = 0;
@@ -265,10 +259,8 @@ for i = 1:nUsers
         %hVLCi(hVLCi==gVLC(:,i))=gVLC(:,ind);
         %hVLCi = reshape(hVLCi,nLeds,UsersVLC);
         hRFi(:,UsersRF)=hbRF(:,i);
-        %noiseVLC = real(2.*gamma.*echarge.*eta.*hVLCi'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
-        noisei = mean(noiseVLC./(gamma.*eta),'all');
-        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noisei));
-        betaki = (1./(3*noisei));
+        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+        betaki = (1./(3*noiseVLC));
         [Wotimoi]=ZF(nLeds,UsersVLC,hVLCi,gEveVLC,I_DC);
         CLUseriVLC=zeros(1,UsersVLC);
         CEUseriVLC=zeros(1,UsersVLC);
@@ -276,8 +268,8 @@ for i = 1:nUsers
             for z=1:UsersVLC
                 W = Wotimoi;
                 W(:,z)=[];
-                CLUseriVLC(z) = abs(log2((sum(alphaki.*((hVLCi(:,z))'*Wotimoi).^2)+1)/(sum(betaki.*(((hVLCi(:,z))'*W).^2))+ 1))/2);
-                CEUseriVLC(z) = abs(log2((sum(alphae.*((gEveVLC)'*Wotimoi).^2)+1)/(sum(betae.*(((gEveVLC)'*W).^2))+ 1))/2);
+                CLUseriVLC(z) = (log2((sum(alphaki.*((hVLCi(:,z))'*Wotimoi).^2)+1)/(sum(betaki.*(((hVLCi(:,z))'*W).^2))+ 1))/2);
+                CEUseriVLC(z) = (log2((sum(alphae.*((gEveVLC)'*Wotimoi).^2)+1)/(sum(betae.*(((gEveVLC)'*W).^2))+ 1))/2);
                 CSVLCaux(z)=max(CLUseriVLC(z)-CEUseriVLC(z),0);
             end
         [Votimoaux]=ZFRF(nAntenas,UsersRF,hRFi,heRF,gammaSrf);
@@ -343,10 +335,8 @@ for i = 1:nUsers
                 break
             end
         end
-        %noiseVLC = real(2.*gamma.*echarge.*eta.*hVLCi'.*I_DC.*B + 4.*pi.*echarge.*Ar.*gamma.*Xamb.*(1-cos(Psic)).*B+i_amp^2.*B);
-        noisei = mean(noiseVLC./(gamma.*eta),'all');
-        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noisei));
-        betaki = (1./(3*noisei));
+        alphaki = (2^(2*log(1-(-1)))./(2*pi*exp(1).*noiseVLC));
+        betaki = (1./(3*noiseVLC));
         [Wotimoi]=ZF(nLeds,UsersVLC,hVLCi,gEveVLC,I_DC);
         CLUseriVLC=zeros(1,UsersVLC);
         CEUseriVLC=zeros(1,UsersVLC);
@@ -433,7 +423,7 @@ end
 %save CSTotalAlg7users4.mat CSUseri
 %save IndTotalAlg7users3.mat alocUsers
 
-save IndzfAlg1users1.mat IndTotal
-save CSTotalzfAlg1users1.mat CSTotal
-save sumzfAlg1users1.mat sumexp
+%save IndzfAlg1users1.mat IndTotal
+%save CSTotalzfAlg1users1.mat CSTotal
+%save sumzfAlg1users1.mat sumexp
 toc
